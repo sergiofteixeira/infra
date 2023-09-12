@@ -31,7 +31,6 @@ const nodeExporterDashboards = new grafana.Dashboard("metrics", {
     overwrite: true
 })
 
-
 for (const [domain, ip] of dnsMap) {
     new cloudflare.Record(domain, {
         name: domain,
