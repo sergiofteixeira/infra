@@ -8,6 +8,7 @@ const config = new pulumi.Config();
 const zoneId = config.require("zone_id");
 const dnsMap = new Map([
     ['grafana', '192.168.1.80'],
+    ['*', '192.168.1.80'],
 ]);
 
 const prometheusDataSource = new grafana.DataSource("prometheus", {
