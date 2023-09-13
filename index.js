@@ -21,17 +21,34 @@ const prometheusDataSource = new grafana.DataSource("prometheus", {
     uid: "1"
 })
 
-const infraFolder  = new grafana.Folder("infra", {
+const grafanaOrg = new grafana.Organization("admins", {
+    name: "admins",
+    adminUser: "admin",
+    createUsers: true,
+    admins: [
+        "sergiofpteixeira@gmail.com"
+    ]
+})
+const infraFolder = new grafana.Folder("infra", {
     title: "infra"
-} )
+})
 
 const nodeExporterDashboards = new grafana.Dashboard("metrics", {
-    configJson: JSON.stringify(JSON.parse(fs.readFileSync("dashboards/node-exporter.json", 'utf8')),null, 2),
+    configJson: JSON.stringify(JSON.parse(fs.readFileSync("dashboards/node-exporter.json", 'utf8')), null, 2),
     folder: infraFolder.id,
-    orgId: "1",
+    orgId: grafanaOrg.id,
     overwrite: true
 })
 
+const prometheusDashboard = new grafana.Dashboard("prometheus", {
+    folder: infraFolder.id,
+    orgId: grafanaOrg.id,
+    overwrite: true,
+    configJson: JSON.stringify(JSON.parse(fs.readFileSync("dashboards/prometheus.json", "utf-8"), null))
+
+})
+
+// dns loop for cloudflare
 for (const [domain, ip] of dnsMap) {
     new cloudflare.Record(domain, {
         name: domain,
